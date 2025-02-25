@@ -3,7 +3,7 @@
 Plugin Name: Dynamic Link Button (Free version)
 Plugin URI: https://github.com/cargabsj175/dynamic-button-free
 Description: Añade un botón dinámico que vincula el contenido con otro dominio manteniendo la misma estructura de URL.
-Version: 1.0
+Version: 1.0.1
 Author: Carlos Sánchez
 Author URI: https://cargabsj175.github.io
 License: GPL v2 or later
@@ -91,6 +91,33 @@ function dlb_register_settings()
     );
 }
 add_action("admin_init", "dlb_register_settings");
+
+// Encolar scripts y estilos
+function dlb_admin_scripts($hook)
+{
+    if ($hook != "toplevel_page_dlb_settings") {
+        return;
+    }
+
+    // Encolar script
+    wp_enqueue_script(
+        "dlb-admin-js",
+        plugins_url("js/dlb-admin.js", __FILE__),
+        ["jquery"],
+        "1.0",
+        true
+    );
+
+    // Pasar variables PHP a JS
+    wp_localize_script("dlb-admin-js", "dlb_vars", [
+        "source_domain" => esc_js(get_option("dlb_source_domain")),
+        "custom_css" => esc_js(get_option("dlb_custom_css")),
+        "template" => file_get_contents(
+            plugin_dir_path(__FILE__) . "template-index.php"
+        ),
+    ]);
+}
+add_action("admin_enqueue_scripts", "dlb_admin_scripts");
 
 // Mostrar la página de configuración
 // Modificar la función dlb_settings_page para añadir la sección de generación de código
@@ -287,36 +314,6 @@ function dlb_settings_page()
     </div>
 </div>
 
-<script>
-jQuery(document).ready(function($) {
-    // Plantilla cargada desde PHP
-    var template = <?php echo json_encode($template_content); ?>;
-
-    // Reemplazar variables dinámicas al generar el código
-    $('#generate-code').on('click', function() {
-        var code = template
-            .replace(/{source_domain}/g, '<?php echo esc_js(
-                $source_domain
-            ); ?>')
-            .replace(/{custom_css}/g, '<?php echo esc_js($custom_css); ?>')
-            .replace(/{custom_js}/g, '<?php echo esc_js($custom_js); ?>');
-        
-        $('#php-code').val(code);
-        $('#generated-code').show();
-    });
-
-    // Copiar el código generado al portapapeles
-    $('#copy-code').on('click', function() {
-        $('#php-code').select();
-        document.execCommand('copy');
-        var $this = $(this);
-        $this.text('¡Copiado!');
-        setTimeout(function() {
-            $this.text('Copiar al Portapapeles');
-        }, 2000);
-    });
-});
-</script>
 <h2>Cómo usar el shortcode</h2>
         <p>Usa el siguiente shortcode en tus posts o páginas:</p>
         <code>[dynamic_button]</code></br></br>
