@@ -73,14 +73,6 @@ Este plugin crea un sistema de enlace inteligente entre dos dominios:
 * **Interfaz mejorada** con pestañas para una gestión más eficiente
 * **Documentación detallada** y soporte premium
 
-## 💡 Casos de uso comunes
-
-- Sitios espejo para diferentes regiones o idiomas
-- Crear una vista previa o "modo de lectura" alternativo
-- Separar secciones de contenido en dominios diferentes
-- Implementar sistemas de afiliados con vista previa
-- Crear versiones para imprimir o visualizar en dispositivos específicos
-
 ## 📝 Licencia
 
 Este plugin está licenciado bajo GPL v2 o posterior.
